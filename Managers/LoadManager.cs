@@ -2,6 +2,8 @@
 
 public class LoadManager
 {
+   public static int currentSlot = 0;
+
    public static void Load(int slot)
     {
         IsRoom[] rooms;
@@ -11,7 +13,6 @@ public class LoadManager
         PlayerHealth.currentHealth = PlayerHealth.maxHealth;
         rooms = GameObject.Find("Campaign").GetComponent<RoomList>().rooms();
         
-
         //--------------------------------------------------------------------
 
         for (int i=0; i<rooms.Length; i++)
@@ -31,7 +32,8 @@ public class LoadManager
         //--------------------------------------------------------------------
 
         loadPowerup(data.powerupID);
-        Debug.Log(data.powerupID + " loaded!");
+
+        currentSlot = slot;
         
     }
 

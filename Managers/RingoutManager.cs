@@ -17,14 +17,9 @@ public class RingoutManager : MonoBehaviour
         p2score = 0;
 
 
-        foreach(CharacterMovement player in transform)
-        {
-            var inv = player.GetComponentInChildren<PlayerInventory>();
-
-            inv.unlockedWeapon[2] = true;
-            inv.switchWeapon(2);
-
-        }
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        
+        PlayerHealth.currentHealth = 999999;
     }
 
     public static void nextRound(int player)

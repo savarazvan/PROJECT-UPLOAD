@@ -6,7 +6,8 @@ public class EnemySpawner : MonoBehaviour
 
     public void spawn(int health)
     {
-        var spawned = Instantiate(enemy, transform, true);
+        var spawned = Instantiate(enemy, transform.position, transform.rotation, transform);
         spawned.GetComponent<EnemyHealth>().currentHealth = health;
+        StartCoroutine(spawned.GetComponent<EnemyPatrol>().GetComponentInChildren<EnemyFieldOfView>().react());      
     }
 }

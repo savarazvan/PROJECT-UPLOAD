@@ -1,13 +1,11 @@
-using System;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public static Transform target;
+    public Transform[] targets;
     Transform camPos;
     public Vector2 boundaryMin, boundaryMax;
     float holdposX;
-    public float fov;
     public float smoothTime;
     public Vector3 offset;
     Vector3 velocity = Vector3.zero;
@@ -18,28 +16,41 @@ public class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
-        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        if (target==null)
+        //--------------------------------------------------------------------------
+
+        if (targets == null)
         {
+            if (GameMaster.gameMode == 3)
+                initTargets(true);
+            else initTargets(false);
+
             return;
         }
 
-        if (target.GetComponent<CharacterMovement>().facingRight)
-            offset.x = lookAhead;
-        else offset.x = -lookAhead;
+        Vector3 centerPoint = cPoint();       
 
-        if(target.GetComponentInChildren<ArmRotation>().enabled)
+        //--------------------------------------------------------------------------
+
+        if (GameMaster.gameMode != 3)
         {
-            int dir = target.GetComponentInChildren<ArmRotation>().dir;
 
-            if (dir == 1)
-                offset.y = lookAhead;
-            else if (dir == 5)
-                offset.y = -lookAhead;
-            else offset.y = 0;
+            offset.x = targets[0].GetComponent<CharacterMovement>().facingRight ? lookAhead : -lookAhead;
+           
+            if (targets[0].GetComponentInChildren<ArmRotation>().enabled)
+            {
+                int dir = targets[0].GetComponentInChildren<ArmRotation>().dir;
+
+                if (dir == 1)
+                    offset.y = lookAhead;
+                else if (dir == 5)
+                    offset.y = -lookAhead;
+                else offset.y = 0;
+            }
         }
 
-        nextPos = target.position + offset;
+        //--------------------------------------------------------------------------
+
+        nextPos = centerPoint + offset;
 
         smoothedPosition = Vector3.SmoothDamp(transform.position, nextPos, ref velocity, smoothTime * Time.deltaTime * 60);
 
@@ -47,6 +58,7 @@ public class CameraFollow : MonoBehaviour
         boundaryMin = GameObject.FindWithTag("Boundary/Min").transform.position;
         roomBackground = GameObject.FindWithTag("RoomBackground").GetComponent<Transform>();
 
+        //--------------------------------------------------------------------------
 
         if (smoothedPosition.x > boundaryMax.x)
             smoothedPosition.x = boundaryMax.x;
@@ -60,5 +72,40 @@ public class CameraFollow : MonoBehaviour
 
         transform.position = smoothedPosition;
         roomBackground.position = new Vector2(transform.position.x, transform.position.y);
+    }
+
+    //--------------------------------------------------------------------------
+
+    Vector3 cPoint()
+    {
+        var bounds = new Bounds(targets[0].position, Vector3.zero);
+
+        for (int i = 1; i < targets.Length; i++)
+        {
+            bounds.Encapsulate(targets[i].position);
+        }
+
+        return bounds.center;
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void initTargets(bool multiPlayer)
+    {
+        if(!multiPlayer)
+        {
+            targets = new Transform[1];
+            targets[0] = GameObject.FindGameObjectWithTag("Player").transform;
+            return;
+        }
+
+        targets = new Transform[2];
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        for (int i = 0; i < players.Length; i++)
+        {
+            targets[i] = players[i].transform;
+        }
     }
 }

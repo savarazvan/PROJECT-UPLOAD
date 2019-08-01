@@ -14,12 +14,15 @@ public class EndlessArenaManager : MonoBehaviour
 
     private void Start()
     {
-        currentWave = 1;
+        currentWave = 0;
         combo = 1;
         comboTime = 0f;
         EnemyHealth.OnEnemyDeath += killed;
         spawnPoints = Transform.FindObjectsOfType<EnemySpawner>();
         powerup = inv.GetComponentInParent<PowerupSlot>();
+        UpgradeManager.controls.Disable();
+
+        StartCoroutine(nextWave());
     }
 
     //--------------------------------------------------
@@ -30,12 +33,7 @@ public class EndlessArenaManager : MonoBehaviour
         if (spawnPoints.Length == 0)
         {
             spawnPoints = Transform.FindObjectsOfType<EnemySpawner>();
-            foreach (EnemySpawner spawner in spawnPoints)
-            {
-                Debug.Log(spawner.gameObject.name);
-                spawner.spawn(100);
-            }
-
+           
             return;
         }
 
@@ -65,13 +63,14 @@ public class EndlessArenaManager : MonoBehaviour
         if (enemy!=null)
             return;
     
-        StartCoroutine("nextWave");
+        StartCoroutine(nextWave());
     }
 
     //--------------------------------------------------
 
     IEnumerator nextWave()
     {
+        UpgradeManager.controls.Enable();
         nextWaveTime = 7f;
         waveClear = true;
         currentWave++;
@@ -82,6 +81,7 @@ public class EndlessArenaManager : MonoBehaviour
             spawner.spawn(100);
         }
 
+        UpgradeManager.controls.Disable();
         waveClear = false;
     }
 

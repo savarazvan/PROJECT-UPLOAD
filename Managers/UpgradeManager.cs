@@ -5,7 +5,7 @@ public class UpgradeManager : MonoBehaviour
     public static int enemyKills=0, meleeKills=0, powerupUses=0, pistolKills=0, weaponKills=0, jumpTimes=0, speedUses=0;
     public static bool doubleJump, maxHealth, speed, powerupCooldown;
     public GameObject UM;
-    public PlayerInput controls;
+    public static PlayerInput controls;
 
     private void Awake()
     {

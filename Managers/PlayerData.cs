@@ -20,7 +20,9 @@ public class PlayerData
         position[1] = transform.position.y;
         position[2] = transform.position.z;
         currentRoom = GameMaster.currentRoom.name;
-        powerupID = powerup.id;
+
+        if(powerup!=null)
+            powerupID = powerup.id;
     }
 
    

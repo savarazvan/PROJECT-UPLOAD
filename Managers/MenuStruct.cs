@@ -10,6 +10,12 @@ public static class MenuStruct {
         public bool horizontalNav;
         public GameObject UI;
     }
+
+    public struct settingsMenu
+    {
+        public int optionsNumber;
+        public string[] optionsName;
+    }
 }
 
 

@@ -10,22 +10,10 @@ public class GameMaster : MonoBehaviour
     public GameObject upgradeNotif;
     public GameObject player;
     public static int gameMode;
-    public GameObject campaignPrefab, endlessArenaPrefab, ringoutPrefab, mainMenu;
+    public GameObject campaignPrefab, endlessArenaPrefab, ringoutPrefab, mainMenu, pauseMenu;
     private GameObject campaign, endlessArena, ringout;
     CameraFollow cameraFollow;
     Keyboard kb;
-   
-    public static void freezeTime()
-    {
-        if (Time.timeScale > 0)
-        {
-            Time.timeScale = 0;
-        }
-        else
-        {
-            Time.timeScale = 1;
-        }
-    }
 
     private void Update()
     {
@@ -81,7 +69,6 @@ public class GameMaster : MonoBehaviour
 
                     PlayerHealth.currentHealth = PlayerHealth.maxHealth;
                     cameraFollow.enabled = false;
-                    cameraFollow.GetComponent<CameraMultiFollow>().enabled = false;
                     break;
                 }
 
@@ -98,7 +85,7 @@ public class GameMaster : MonoBehaviour
                     }
 
                     cameraFollow.enabled = true;
-                    cameraFollow.GetComponent<CameraMultiFollow>().enabled = false;
+                    cameraFollow.initTargets(false);
 
                     Transform[] objs = campaign.GetComponentsInChildren<Transform>(true);
 
@@ -130,7 +117,7 @@ public class GameMaster : MonoBehaviour
                     }
 
                     cameraFollow.enabled = true;
-                    cameraFollow.GetComponent<CameraMultiFollow>().enabled = false;
+                    cameraFollow.initTargets(false);
 
                     break;
                 }
@@ -145,17 +132,11 @@ public class GameMaster : MonoBehaviour
 
                     ringout = Instantiate(ringoutPrefab, Vector3.zero, transform.rotation);
                     ringout.name = "Ringout";
-
-                    var multiCam = cameraFollow.GetComponent<CameraMultiFollow>();
-                    multiCam.enabled = true;
-                    GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
-
-                    for(int i=0; i<objects.Length; i++)
-
-                    {
-                        multiCam.players[i] = objects[i].GetComponent<Transform>();
-                    }
                     
+                    cameraFollow.enabled = true;
+
+                    cameraFollow.initTargets(true);
+
                     break;
                 }
 
@@ -167,9 +148,24 @@ public class GameMaster : MonoBehaviour
         }
        
     }
-    void toggleMainMenu()
+
+    //-------------------------------------------------------------------
+
+    public void pauseGame(CharacterMovement player, bool showSaveSlot)
     {
-        mainMenu.active = !mainMenu.active;
+        pauseMenu.SetActive(true);
+
+        if (!showSaveSlot)
+            pauseMenu.GetComponentInChildren<MenuCursor>().currentMenu = MenuList.pauseMenu;
+
+        else
+        {
+            pauseMenu.GetComponentInChildren<MenuCursor>().currentMenu = MenuList.pauseMenu;
+            pauseMenu.GetComponentInChildren<MenuCursor>().changeMenu(MenuList.autosaveSlot);
+        }
+
+        Time.timeScale = 0f;
+        player.OnDisable();
     }
 
 }

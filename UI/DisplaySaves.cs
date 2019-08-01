@@ -5,7 +5,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public class DisplaySaves : MonoBehaviour
 {
-    public Text slot1, slot2, slot3;
     public float updateFreq, lastUpdated;
 
     private void Start()
@@ -23,35 +22,39 @@ public class DisplaySaves : MonoBehaviour
 
     void updateSlots()
     {
+        int i = 1;
+
         BinaryFormatter formatter = new BinaryFormatter();
-
-        if (File.Exists(Application.persistentDataPath + "/saveslot1.data"))
+        
+        foreach(RectTransform saveSlot in transform)
         {
-            FileStream stream = new FileStream(Application.persistentDataPath + "/saveslot1.data", FileMode.Open);
-            PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
-            slot1.text = playerData.date + System.Environment.NewLine + playerData.time;
-            stream.Close();
-        }
-        else slot1.text = "Empty slot";
+            if (saveSlot.tag == "SaveSlot")
+            {
+                Text slotText = saveSlot.GetComponentInChildren<Text>();
+                if (File.Exists(Application.persistentDataPath + "/saveslot" + i + ".data"))
+                {
+                    FileStream stream = new FileStream(Application.persistentDataPath +
+                        "/saveslot" + i + ".data", FileMode.Open);
 
-        if (File.Exists(Application.persistentDataPath + "/saveslot2.data"))
-        {
-            FileStream stream = new FileStream(Application.persistentDataPath + "/saveslot2.data", FileMode.Open);
-            PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
-            slot1.text = playerData.date + System.Environment.NewLine + playerData.time;
-            stream.Close();
-        }
-        else slot2.text = "Empty slot";
+                    if (stream.Length == 0)
+                    {
+                        slotText.text = "Empty slot";
+                        stream.Close();
+                        i++;
+                        return;
+                    }
 
-        if (File.Exists(Application.persistentDataPath + "/saveslot3.data"))
-        {
-            FileStream stream = new FileStream(Application.persistentDataPath + "/saveslot3.data", FileMode.Open);
-            PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
-            slot1.text = playerData.date + System.Environment.NewLine + playerData.time;
-            stream.Close();
-        }
-        else slot3.text = "Empty slot";
+                    PlayerData playerData = formatter.Deserialize(stream) as PlayerData;
+                    slotText.text = playerData.date + System.Environment.NewLine + playerData.time;
 
+                    stream.Close();
+                }
+
+                else slotText.text = "Empty slot";
+                i++;
+            }
+        }
+       
         lastUpdated = Time.time;
     }
 }
