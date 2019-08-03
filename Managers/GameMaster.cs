@@ -51,6 +51,7 @@ public class GameMaster : MonoBehaviour
     public void setGameMode(int mode)
     {
         gameMode = mode;
+        Time.timeScale = 1;
 
         switch (mode)
         {
@@ -58,7 +59,7 @@ public class GameMaster : MonoBehaviour
             //--------------------------MAIN MENU-----------------------------
             case 0:
                 {
-                    mainMenu.active = true;
+                    mainMenu.SetActive(true);
 
                     if (campaign != null)
                         Destroy(campaign);
@@ -69,6 +70,7 @@ public class GameMaster : MonoBehaviour
 
                     PlayerHealth.currentHealth = PlayerHealth.maxHealth;
                     cameraFollow.enabled = false;
+                    
                     break;
                 }
 
@@ -89,7 +91,7 @@ public class GameMaster : MonoBehaviour
 
                     Transform[] objs = campaign.GetComponentsInChildren<Transform>(true);
 
-                    foreach(Transform obj in objs)
+                    foreach (Transform obj in objs)
                     {
                         if (obj.name == "Upgrade Menu")
                             GetComponent<UpgradeManager>().UM = obj.gameObject;

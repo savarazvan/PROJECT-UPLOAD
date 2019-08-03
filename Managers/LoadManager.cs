@@ -11,6 +11,7 @@ public class LoadManager
         Transform transform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         PlayerHealth.maxHealth = data.maxHealth;
         PlayerHealth.currentHealth = PlayerHealth.maxHealth;
+        GameObject.FindObjectOfType<PlayerHealth>().dead = false;
         rooms = GameObject.Find("Campaign").GetComponent<RoomList>().rooms();
         
         //--------------------------------------------------------------------

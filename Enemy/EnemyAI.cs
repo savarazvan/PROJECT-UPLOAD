@@ -147,6 +147,8 @@ public class EnemyAI : MonoBehaviour {
 
             transform.position = Vector3.MoveTowards(transform.position, 
                 playerPos, enemySpeed*Time.deltaTime);
+
+            lastAttackTime = Time.time;
         }
 
         //----------------------------------------------------------------

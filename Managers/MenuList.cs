@@ -2,7 +2,7 @@
 
 public static class MenuList
 {
-    public static MenuStruct.Menu mainMenu, campaignSelect, saveSelect, pauseMenu, autosaveSlot, play, settings, pauseSettings;
+    public static MenuStruct.Menu mainMenu, campaignSelect, saveSelect, pauseMenu, autosaveSlot, play, settings, pauseSettings, gameOver;
     public static MenuStruct.settingsMenu[] settingsOptions = new MenuStruct.settingsMenu[5];
 
     public static void InitializeSettingsOptions(int pointer)
@@ -14,37 +14,43 @@ public static class MenuList
     {
         //------------------MAIN MENU----------------------    
 
-        mainMenu.ID = 0;
+        if (mainMenu.UI == null)
+        {
+            mainMenu.ID = 0;
 
-        mainMenu.horizontalNav = false;
+            mainMenu.horizontalNav = false;
 
-        mainMenu.rectScale = new Vector2(300f, 74.4f);
+            mainMenu.rectScale = new Vector2(300f, 74.4f);
 
-        mainMenu.positions = new Vector2[3];
+            mainMenu.positions = new Vector2[3];
 
-        mainMenu.positions[0] = new Vector2(0, 112);
-        mainMenu.positions[1] = new Vector2(0, 0);
-        mainMenu.positions[2] = new Vector2(0, -112);
+            mainMenu.positions[0] = new Vector2(0, 112);
+            mainMenu.positions[1] = new Vector2(0, 0);
+            mainMenu.positions[2] = new Vector2(0, -112);
 
-        mainMenu.UI = GameObject.Find("Main");
+            mainMenu.UI = GameObject.Find("Main");
+        }
 
-        
         //-----------------CAMPAIGN SELECT--------------------
 
-        campaignSelect.ID = 1;
+        if (campaignSelect.UI == null)
+        {
+            campaignSelect.ID = 1;
 
-        campaignSelect.horizontalNav = true;
+            campaignSelect.horizontalNav = true;
 
-        campaignSelect.rectScale = new Vector2(300, 300);
+            campaignSelect.rectScale = new Vector2(300, 300);
 
-        campaignSelect.positions = new Vector2[2];
+            campaignSelect.positions = new Vector2[2];
 
-        campaignSelect.positions[0] = new Vector2(-300, 0);
-        campaignSelect.positions[1] = new Vector2(200, 0);
+            campaignSelect.positions[0] = new Vector2(-300, 0);
+            campaignSelect.positions[1] = new Vector2(200, 0);
 
-        campaignSelect.UI = GameObject.Find("CampaignSelect");
+            campaignSelect.UI = GameObject.Find("CampaignSelect");
 
-        campaignSelect.UI.SetActive(false);
+            campaignSelect.UI.SetActive(false);
+        }
+    
 
         //-------------------SAVE SELECT----------------------
 
@@ -147,8 +153,26 @@ public static class MenuList
         pauseSettings.UI = GameObject.Find("PauseSettings");
 
         pauseSettings.UI.SetActive(false);
+        
 
-        pauseSettings.UI.transform.parent.gameObject.SetActive(false);
+        //-------------------GAME OVER---------------------
+
+        gameOver.ID = 8;
+        gameOver.horizontalNav = true;
+
+        gameOver.rectScale = new Vector2(300, 100);
+
+        gameOver.positions = new Vector2[2];
+
+        gameOver.positions[0] = new Vector2(-200, -95);
+        gameOver.positions[1] = new Vector2(200, -95);
+
+        gameOver.UI = GameObject.Find("GameOver");
+
+        gameOver.UI.SetActive(false);
+
+        gameOver.UI.transform.parent.gameObject.SetActive(false);
+
     }
 
     public static void initializeSettingsOptions()

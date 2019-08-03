@@ -95,6 +95,7 @@ public class EndlessArenaManager : MonoBehaviour
             default:
             {
                     return 0;
+                    
             }
 
             case 0:

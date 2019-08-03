@@ -4,9 +4,9 @@ public class PlayerInventory : MonoBehaviour
 {
     Keyboard keyboard = Keyboard.current;
 
-    public static Weapon[] weapon = new Weapon[4];
+    public Weapon[] weapon = new Weapon[4];
 
-    public bool[] unlockedWeapon = new bool[weapon.Length];
+    public bool[] unlockedWeapon;
 
     public Sprite armSprite;
 
@@ -23,24 +23,28 @@ public class PlayerInventory : MonoBehaviour
     private void Awake()
     {
         attackKey.performed += ctx => attack(selectedWeapon.ID);
-        showWheel.performed += ctx => displayWeaponWheel(ctx.ReadValue<float>());
-        showWheel.canceled += ctx => displayWeaponWheel(ctx.ReadValue<float>());
-    }
-
-    private void Start()
-    {
-        weapon[0] = Resources.Load<Weapon>("Weapons/Melee");
-        weapon[1] = Resources.Load<Weapon>("Weapons/Pistol");
-        weapon[2] = Resources.Load<Weapon>("Weapons/Rocket Launcher");
-        armSprite = Resources.Load<Sprite>("Sprites/arm");
-        switchWeapon(0);
-    }
-
-    private void Update()
-    {
         
     }
 
+    //-----------------------------------------------------------
+
+    private void Start()
+    {
+        armSprite = Resources.Load<Sprite>("Sprites/arm");
+
+        if (GameMaster.gameMode == 3)
+            switchWeapon(2);
+        else
+            switchWeapon(0);   
+
+        if (GameMaster.gameMode != 3)
+        {
+            showWheel.performed += ctx => displayWeaponWheel(ctx.ReadValue<float>());
+            showWheel.canceled += ctx => displayWeaponWheel(ctx.ReadValue<float>());
+        }       
+    }
+
+    //-----------------------------------------------------------
 
     public void switchWeapon(int ID)
     {
@@ -71,11 +75,17 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    //-----------------------------------------------------------
+
     void attack(int ID)
     {
         int rng = (RNG.Rng() % 3) + 1;
+
         if (ID == 0)
             GetComponent<Weapon_Melee>().Attack(rng);
+
+        //-----------------------------------------------------------
+
         else
         {
             int fRight;
@@ -89,12 +99,13 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    //-----------------------------------------------------------
+
     void displayWeaponWheel(float value)
     {
         if (value > 0 && !weaponWheel.activeSelf)
         {
             weaponWheel.SetActive(true);
-            weaponWheel.GetComponentInChildren<WeaponWheel>().updateInventory(unlockedWeapon);
             Time.timeScale = 0.05f;
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
@@ -106,6 +117,8 @@ public class PlayerInventory : MonoBehaviour
         }
 
     }
+
+    //-----------------------------------------------------------
 
     private void OnEnable()
     {

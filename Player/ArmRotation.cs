@@ -9,14 +9,12 @@ public class ArmRotation : MonoBehaviour
     public int dir;
     private float H, V;
     public bool facingRight;
-    public PlayerInput controls;
-    float camLookAhead;
     int previousDir;
+    public InputAction aiming;
 
     private void Awake()
     {
-        controls = new PlayerInput();
-        controls.Player.Aiming.performed += ctx => setValues(ctx.ReadValue<Vector2>());
+        aiming.performed += ctx => setValues(ctx.ReadValue<Vector2>());
     }
 
     //---------------------------------------------
@@ -140,12 +138,12 @@ public class ArmRotation : MonoBehaviour
 
     private void OnEnable()
     {
-        controls.Enable();
+        aiming.Enable();
     }
 
     private void OnDisable()
     {
-        controls.Disable();
+        aiming.Disable();
     }
 }
 

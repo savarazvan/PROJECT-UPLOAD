@@ -46,12 +46,11 @@ public class PowerupSlot : MonoBehaviour
 
     public void activate()
     {
-        if (powerupSlot && !powerupInCooldown)
+        if (powerupSlot && !powerupInCooldown && !powerupActive)
         {
             powerupTimer = powerupSlot.duration;
             powerupActive = true;
         }
-        else return;
     }
 
     //---------------------------------------------------
@@ -65,8 +64,8 @@ public class PowerupSlot : MonoBehaviour
             powerupTimer -= Time.deltaTime;
             if (powerupTimer <= 0f)
             {
-                powerupInCooldown = true;
                 powerupActive = false;
+                powerupInCooldown = true;
             }
         }
 

@@ -10,7 +10,7 @@ public class CharacterMovement : MonoBehaviour
     public static bool candoublejump, canDash;
     public LayerMask whatIsGround;
     public bool facingRight, canClimb;
-    public GameObject gameMaster;
+    public GameMaster gameMaster;
     Animator anim;
     Rigidbody2D rb;
     [HideInInspector]public Vector2 groundDir;
@@ -37,6 +37,9 @@ public class CharacterMovement : MonoBehaviour
 
         jumping.performed += ctx => jump();
         climbing.performed += ctx => climbLadder(ctx.ReadValue<float>());
+
+        controls.Player.Pause.performed += ctx => gameMaster.pauseGame(this, false);
+
         keyboard = Keyboard.current;
     }
 
@@ -46,7 +49,7 @@ public class CharacterMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         groundDir = Vector2.down;
-
+        gameMaster = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
     }
 
     void OnTriggerEnter2D(Collider2D trigger) 
@@ -114,8 +117,10 @@ public class CharacterMovement : MonoBehaviour
     {
         if (grounded())
         {
+            GameObject.FindObjectOfType<AudioManager>().play("Jump");
+
             rb.velocity = (new Vector2(rb.velocity.x, jumpForce));
-            candoublejump = true;
+            candoublejump = true;           
             if (UpgradeManager.jumpTimes < 20)
                 UpgradeManager.jumpTimes++;
             UpgradeManager.checkUnlocks();
@@ -125,6 +130,8 @@ public class CharacterMovement : MonoBehaviour
         {
             if (candoublejump && UpgradeManager.doubleJump)
             {
+                GameObject.FindObjectOfType<AudioManager>().play("Jump");
+
                 rb.velocity = (new Vector2(rb.velocity.x, jumpForce));
                 candoublejump = false;
             }
@@ -192,20 +199,24 @@ public class CharacterMovement : MonoBehaviour
     //---------------------------------------------------------------------------------
 
 
-    private void OnEnable()
+    public void OnEnable()
     {
         controls.Enable();
         movement.Enable();
         jumping.Enable();
         climbing.Enable();
+        GetComponentInChildren<PlayerInventory>().showWheel.Enable();
+        GetComponentInChildren<PlayerInventory>().attackKey.Enable();
     }
 
-    private void OnDisable()
+    public void OnDisable()
     {
         controls.Disable();
         movement.Disable();
         jumping.Disable();
         climbing.Disable();
+        GetComponentInChildren<PlayerInventory>().showWheel.Disable();
+        GetComponentInChildren<PlayerInventory>().attackKey.Disable();
     }
 
 }
